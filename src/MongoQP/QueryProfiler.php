@@ -25,7 +25,13 @@ class QueryProfiler
 
     public function getCollections($database)
     {
-        return $this->mongo->selectDB($database)->getCollectionNames();
+        $mongodb = $this->mongo->selectDB($database);
+
+        if (!$mongodb->getSlaveOkay()) {
+              $mongodb->setSlaveOkay();
+        }
+        
+        return $mongodb->getCollectionNames();
     }
 
     public function getProfilingLevel($database)
