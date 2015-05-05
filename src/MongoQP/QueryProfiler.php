@@ -28,7 +28,7 @@ class QueryProfiler
         $mongodb = $this->mongo->selectDB($database);
 
         if (!$mongodb->getSlaveOkay()) {
-              $mongodb->setSlaveOkay();
+              $mongodb->setReadPreference(\MongoClient::RP_PRIMARY_PREFERRED);
         }
         
         return $mongodb->getCollectionNames();
@@ -48,6 +48,9 @@ class QueryProfiler
     {
         $mongodb = $this->mongo->selectDB($database);
 
+        if (!$mongodb->getSlaveOkay()) {
+              $mongodb->setReadPreference(\MongoClient::RP_PRIMARY_PREFERRED);
+        }
         // Ensure the database has a "system.profile" collection
         if ( ! in_array('system.profile', $mongodb->getCollectionNames(true))) {
             return array();
